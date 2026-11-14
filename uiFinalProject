@@ -1,0 +1,35 @@
+#CS 2640
+# prints cat and wordle description
+
+.include "macro.asm"
+
+
+.data
+wordleDescription: .asciiz "Wordle: Guess the 5 letter word in 5 tries!\n\n"
+cat: .asciiz " /\\,,,/\\ \n=(O w O)=\n|--U U-----------------|\n|       (WORDLE)       |   \n|----------------------|\n\n"
+firstGuess: .asciiz "First Guess: "
+secondGuess: .asciiz "First Guess: "
+thirdGuess: .asciiz "First Guess: "
+fourthGuess: .asciiz "First Guess: "
+fifthGuess: .asciiz "First Guess: "
+nameBuffer: .space 6
+
+.text
+main:
+	li $v0, 4
+	la $a0, cat
+	syscall
+	
+	li $v0, 4
+	la $a0, wordleDescription
+	syscall
+	
+	li $v0, 4
+	la $a0, firstGuess
+	syscall
+	
+
+	
+	
+	
+	
