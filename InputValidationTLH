@@ -1,51 +1,49 @@
 # CS 2640 - Wordle input validation
-# Thar Linn Htet
-#
-# Input:  $a0 = address of the guess buffer from syscall 8
-# Output: $v0 = 1 if the guess is valid, 0 otherwise
-# A valid guess is converted to lowercase and null-terminated.
-# Clobbers: $t0-$t3
 
 .text
 validateGuess:
-    move $t0, $a0
-    li $t1, 5
+	
+    	move $t0, $a0
+	li $t1, 5
 
 validateLetter:
-    lbu $t2, 0($t0)
+	lbu $t2, 0($t0)
 
-    blt $t2, 'A', invalidGuessFormat
-    nop
-    bgt $t2, 'Z', checkLowercase
-    nop
+	# Reject bytes below 'A', including digits, spaces, and early Enter.
+    	blt $t2, 'A', invalidGuessFormat
+    	nop
+    	bgt $t2, 'Z', checkLowercase # Bytes above 'Z' might be lowercase.
+    	nop
 
-    # Convert uppercase ASCII to lowercase.
-    addiu $t2, $t2, 32
-    sb $t2, 0($t0)
+    	# Uppercase ASCII letters are 32 below their lowercase equivalents. Convert uppercase ASCII to lowercase.
+    	addiu $t2, $t2, 32
+    	sb $t2, 0($t0)
 
 checkLowercase:
-    blt $t2, 'a', invalidGuessFormat
-    nop
-    bgt $t2, 'z', invalidGuessFormat
-    nop
+	# Reject anything outside 'a' through 'z', including symbols.
+    	blt $t2, 'a', invalidGuessFormat
+    	nop
+    	bgt $t2, 'z', invalidGuessFormat
+   	nop
 
-    addiu $t0, $t0, 1
-    addiu $t1, $t1, -1
-    bnez $t1, validateLetter
-    nop
+    	addiu $t0, $t0, 1
+    	addiu $t1, $t1, -1
+    	bnez $t1, validateLetter
+    	nop
 
-    # After exactly five letters, the next byte should be Enter.
-    lbu $t2, 0($t0)
-    li $t3, 10
-    bne $t2, $t3, invalidGuessFormat
-    nop
-
-    sb $zero, 0($t0)
-    li $v0, 1
-    jr $ra
-    nop
+    	# After exactly five letters, the next byte should be Enter. A sixth letter, space, or symbol makes the guess invalid.
+    	lbu $t2, 0($t0)
+    	li $t3, 10
+    	bne $t2, $t3, invalidGuessFormat
+    	nop
+	
+	# Replace the newline with '\0' so the word-bank lookup gets five letters.
+    	sb $zero, 0($t0)
+    	li $v0, 1
+    	jr $ra
+    	nop
 
 invalidGuessFormat:
-    move $v0, $zero
-    jr $ra
-    nop
+    	move $v0, $zero		# Tell the caller to reject the guess.
+    	jr $ra
+    	nop
