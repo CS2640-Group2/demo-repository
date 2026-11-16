@@ -4,10 +4,10 @@
 validateGuess:
 	
     	move $t0, $a0
-	li $t1, 5
+		li $t1, 5
 
 validateLetter:
-	lbu $t2, 0($t0)
+		lbu $t2, 0($t0)
 
 	# Reject bytes below 'A', including digits, spaces, and early Enter.
     	blt $t2, 'A', invalidGuessFormat
@@ -24,7 +24,7 @@ checkLowercase:
     	blt $t2, 'a', invalidGuessFormat
     	nop
     	bgt $t2, 'z', invalidGuessFormat
-   	nop
+   		nop
 
     	addiu $t0, $t0, 1
     	addiu $t1, $t1, -1
