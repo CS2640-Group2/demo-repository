@@ -115,7 +115,7 @@ searchLoop:
 	addi $t6, $t6, 1
 	j searchLoop
 	
-correct:
+correctLetter:
 	li $v0, 11
 	li $a0, 71
 	syscall
@@ -138,7 +138,7 @@ nextLetter:
 	addi $t0, $t0, 1
 	addi $t1, $t1, 1
 	addi $t2, $t2, 1
-	j checkLoop
+	j searchLoop
 	
 checkWin:
 	li $t0, 5
